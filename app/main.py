@@ -20,14 +20,49 @@ def load_categorical_model():
 
 
 def main():
-    st.title('Mushroom Classifier')
-    st.write('Welcome to your categorical and photographical Mushroom Classifier')
-    st.write('Choose the model you want to use:')
+    
 
-    model_options = ['Image Classifier', 'Category Model']
-    selected_model = st.selectbox('Select Model:', model_options)
+    model_options = ['Intro', 'Image Classifier', 'Category Classifier']
+    selected_model = st.sidebar.selectbox('Select Model:', model_options)
 
-    if selected_model == 'Image Classifier':
+    if selected_model == 'Intro':
+        st.title('Mushroom Classifier')
+        st.write('Welcome to your categorical and photographical Mushroom Classifier')
+        st.write("Before you advance further, you should learn a bit about the anatomy of mushrooms.")
+        imagen = Image.open('Anatomy.jpg')
+        st.image(imagen, caption='Different parts of a mushroom')
+        st.title("Mushroom Anatomy Description")
+        st.markdown("---")
+        st.header("Cap")
+        st.write("The cap is the upper part of the mushroom, typically umbrella-shaped, and serves to protect the gills beneath.")
+        st.markdown("---")
+
+        st.header("Stem")
+        st.write("The stem, also known as the stipe, is the vertical structure supporting the cap and connecting it to the substrate.")
+        st.markdown("---")
+
+        st.header("Ring")
+        st.write("The ring, or annulus, is a membranous or skirt-like structure around the upper part of the stem. It can be present or absent.")
+        st.markdown("---")
+
+        st.header("Gill")
+        st.write("Gills are thin, blade-like structures under the cap. They radiate out from the stem and are responsible for spore production.")
+        st.markdown("---")
+
+        st.header("Veil")
+        st.write("The veil is a protective covering over the gills when the mushroom is young. It may partially or fully cover the gills and often ruptures as the mushroom matures.")
+        st.markdown("---")
+
+        st.header("Habitat")
+        st.write("Mushrooms can be found in a variety of habitats, including forests, grasslands, and even urban environments. They often thrive in decaying organic matter.")
+
+
+
+        st.subheader('Now, please choose the model you want to use in the sidebar:')
+        st.markdown("In case you have pictures, we recomend the **Image Classifier**. Otherwhise, the **Categorical Classifier** will sufice.")
+
+
+    elif selected_model == 'Image Classifier':
         model = load_image_classifier_model()
         st.subheader('You selected the Image classifier.')
         file= st.file_uploader('Please, upload your mushroom photo', type=['jpg','png'])
@@ -65,8 +100,8 @@ def main():
         else:
             st.text('Please upload a valid image.')
 
-    elif selected_model == 'Category Model':
-        image = Image.open('Anatomy.jpg')
+    elif selected_model == 'Category Classifier':
+        
         lista_columnas = ['cap-diameter', 'stem-height', 'stem-width', 'has-ring', 'cap-shape_b',
  'cap-shape_c', 'cap-shape_f', 'cap-shape_o', 'cap-shape_p', 'cap-shape_s', 'cap-shape_x',
  'cap-surface_d', 'cap-surface_e', 'cap-surface_g', 'cap-surface_h', 'cap-surface_i', 'cap-surface_k', 'cap-surface_l', 'cap-surface_nan',
@@ -81,11 +116,11 @@ def main():
  'habitat_u', 'habitat_w', 'season_a', 'season_s', 'season_u', 'season_w']
 
         model_inputer = pd.DataFrame(data = [[0] * len(lista_columnas)],columns= lista_columnas)
-        st.dataframe(model_inputer)
-
         
 
-        st.image(image, caption='Different parts of a mushroom')
+        
+        imagen = Image.open('Anatomy.jpg')
+        st.image(imagen, caption='Different parts of a mushroom')
         model = load_categorical_model()
         st.subheader('You selected the Categorical method.')
         st.write('Please use the sliders to select the values of the following categories.')
@@ -96,41 +131,6 @@ def main():
         model_inputer['cap-diameter'] = cap_diameter_intro
 
 
-        st.subheader('Stem height')
-        stem_height_intro = st.slider('between 1 and 20:',min_value=1.0,max_value=20.0,step=0.5)
-        model_inputer['stem-height'] = stem_height_intro
-
-        st.subheader('Stem width')
-        stem_width_intro = st.slider('in CM, between 1 and 10:',min_value=1.0,max_value=10.0,step=0.5)
-        model_inputer['stem-width'] = stem_width_intro
-
-
-        st.subheader('Has ring')
-        has_ring_intro = st.slider('0 for no, 1 for yes:',min_value=0,max_value=1,step=1)
-        model_inputer['has-ring'] = has_ring_intro
-
-        st.subheader('Stem surface')
-        stem_surface_dic= ['stem-surface_g', 'stem-surface_h', 'stem-surface_i', 'stem-surface_k',
-   'stem-surface_nan', 'stem-surface_s', 'stem-surface_t', 'stem-surface_y']
-        stem_surface= ['grooves', 'shiny', 'fibrous', 'silky',
-   'none', 'smooth', 'sticky', 'scaly']
-        stem_surface_intro = st.select_slider('Choose category',options=stem_surface)
-
-        selected_index = stem_surface.index(stem_surface_intro)
-        selected_column = stem_surface_dic[selected_index]
-        model_inputer[selected_column] = 1
-
-
-        st.subheader('Stem color')
-        stem_color_dic= ['stem-color_b', 'stem-color_e', 'stem-color_f', 'stem-color_g', 'stem-color_k', 'stem-color_l',
-   'stem-color_n', 'stem-color_o', 'stem-color_p', 'stem-color_r', 'stem-color_u', 'stem-color_w', 'stem-color_y']
-        stem_color= ['buff', 'red', 'none', 'gray', 'black', 'blue',
-   'brown', 'orange', 'pink', 'green', 'purple', 'white', 'yellow']
-        stem_color_intro = st.select_slider('Choose category',options=stem_color)
-
-        selected_index = stem_color.index(stem_color_intro)
-        selected_column = stem_color_dic[selected_index]
-        model_inputer[selected_column] = 1
 
 
 
@@ -167,6 +167,43 @@ def main():
         model_inputer[selected_column] = 1
 
 
+
+        st.subheader('Stem height')
+        stem_height_intro = st.slider('between 1 and 20:',min_value=1.0,max_value=20.0,step=0.5)
+        model_inputer['stem-height'] = stem_height_intro
+
+        st.subheader('Stem width')
+        stem_width_intro = st.slider('in CM, between 1 and 10:',min_value=1.0,max_value=10.0,step=0.5)
+        model_inputer['stem-width'] = stem_width_intro
+
+        st.subheader('Stem surface')
+        stem_surface_dic= ['stem-surface_g', 'stem-surface_h', 'stem-surface_i', 'stem-surface_k',
+   'stem-surface_nan', 'stem-surface_s', 'stem-surface_t', 'stem-surface_y']
+        stem_surface= ['grooves', 'shiny', 'fibrous', 'silky',
+   'none', 'smooth', 'sticky', 'scaly']
+        stem_surface_intro = st.select_slider('Choose category',options=stem_surface)
+
+        selected_index = stem_surface.index(stem_surface_intro)
+        selected_column = stem_surface_dic[selected_index]
+        model_inputer[selected_column] = 1
+
+
+        st.subheader('Stem color')
+        stem_color_dic= ['stem-color_b', 'stem-color_e', 'stem-color_f', 'stem-color_g', 'stem-color_k', 'stem-color_l',
+   'stem-color_n', 'stem-color_o', 'stem-color_p', 'stem-color_r', 'stem-color_u', 'stem-color_w', 'stem-color_y']
+        stem_color= ['buff', 'red', 'none', 'gray', 'black', 'blue',
+   'brown', 'orange', 'pink', 'green', 'purple', 'white', 'yellow']
+        stem_color_intro = st.select_slider('Choose category',options=stem_color)
+
+        selected_index = stem_color.index(stem_color_intro)
+        selected_column = stem_color_dic[selected_index]
+        model_inputer[selected_column] = 1
+
+
+
+
+
+
         st.subheader('Gill color')
         gill_color_dic= ['gill-color_b', 'gill-color_e', 'gill-color_f', 'gill-color_g', 'gill-color_k', 'gill-color_n', 
   'gill-color_o', 'gill-color_p', 'gill-color_r', 'gill-color_u', 'gill-color_w', 'gill-color_y']
@@ -188,11 +225,16 @@ def main():
         model_inputer[selected_column] = 1
 
         
+
+        st.subheader('Has ring')
+        has_ring_intro = st.slider('0 for no, 1 for yes:',min_value=0,max_value=1,step=1)
+        model_inputer['has-ring'] = has_ring_intro
+
+        
         st.subheader('Ring type')
-        ring_type_dic= [ 'ring-type_e', 'ring-type_r', 'ring-type_l', 'ring-type_p', 'ring-type_z']
+        ring_type_dic= [ 'ring-type_e', 'ring-type_f', 'ring-type_r', 'ring-type_l', 'ring-type_p', 'ring-type_z']
         ring_type= ['evanescent','flaring','grooved','large','pendant','zone']
         ring_type_intro = st.select_slider('Choose category',options=ring_type)
-
 
         selected_index = ring_type.index(ring_type_intro)
         selected_column = ring_type_dic[selected_index]
